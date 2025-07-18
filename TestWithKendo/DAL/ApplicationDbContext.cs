@@ -9,6 +9,7 @@ namespace TestWithKendo.DAL
         public DbSet<Employee> Employees { get; set; }
         public DbSet<AccountClass> AccountClasses { get; set; }
         public DbSet<LoanStatus> LoanStatuses { get; set; }
+        public DbSet<Loans> Loanses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -18,7 +19,7 @@ namespace TestWithKendo.DAL
             {
                 entity.HasKey(e => e.AccountClassId);
                 entity.HasData(
-                    new AccountClass { AccountClassId = 1, AccountClassName = "Loan", AccountClassCode = "loan", SortOrder = 1 }
+                    new AccountClass { AccountClassId = 1, AccountClassName = "Loan", AccountClassCode = "loan", AccountClassSortOrder = 1 }
                 );
             });
 

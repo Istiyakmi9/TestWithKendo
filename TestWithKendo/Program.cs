@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using TestWithKendo.DAL;
 using TestWithKendo.Entities;
+using TestWithKendo.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseInMemoryDatabase("AccuAccount_Database"));
+
+builder.Services.AddScoped<AccountStatusListService>();
+
 
 builder.Services.AddRazorPages();
 var app = builder.Build();

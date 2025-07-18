@@ -9,7 +9,7 @@ namespace TestWithKendo.Entities
             if (!context.AccountClasses.Any())
             {
                 context.AccountClasses.AddRange(
-                    new AccountClass { AccountClassId = 1, AccountClassName = "Loan", AccountClassCode = "loan", SortOrder = 1 }
+                    new AccountClass { AccountClassId = 1, AccountClassName = "Loan", AccountClassCode = "loan", AccountClassSortOrder = 1 }
                 );
 
                 context.SaveChanges();

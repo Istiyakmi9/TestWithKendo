@@ -8,7 +8,7 @@ namespace TestWithKendo.Entities
         public int AccountClassId { get; set; }
         public string AccountClassName { get; set; }
         public string AccountClassCode { get; set; }
-        public int SortOrder { get; set; }
+        public int AccountClassSortOrder { get; set; }
         public List<LoanStatus> LoanStatuses { get; set; } = new();
     }
 }
