@@ -15,7 +15,6 @@ namespace TestWithKendo.Entities
         public bool IsApprovedApplicationStatus { get; set; }
         public bool IsDefaultApplicationStatus { get; set; }
         public int AccountClassId { get; set; }
-        public AccountClass AccountClass { get; set; }
         public int AccountCount { get; set; }
     }
 }

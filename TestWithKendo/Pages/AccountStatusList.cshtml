@@ -1,0 +1,91 @@
+﻿@page
+@model TestWithKendo.Pages.AccountStatusListModel
+
+@{
+    ViewData["Title"] = "AccountStatusList";
+}
+
+<h1>AccountStatusList</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<div id="tabstrip">
+    <ul>
+        @foreach (var accountClass in Model.AccountClass)
+        {
+            <li>@accountClass.AccountClassName</li>
+        }
+    </ul>
+
+    @foreach (var accountClass in Model.AccountClass)
+    {
+        var gridId = $"LoanStatusGrid_{accountClass.AccountClassId}";
+        var dataJson = Json.Serialize(accountClass.LoanStatuses);
+
+        <div>
+            <div id="addLoanSatus" onclick="alert('/Admin/AddStatus?accountClassId=@accountClass.AccountClassId')">
+                Add New @accountClass.AccountClassName Status
+            </div>
+
+            <div id="@gridId" class="mb-2"></div>
+
+            <script>
+
+                function onDeleteClick() {
+
+                }
+
+                function onEditClick() {
+
+                }
+
+                $(document).ready(function () {
+                    $('#addLoanSatus').kendoButton();
+
+                    var data = @Html.Raw(dataJson);
+
+                    $("#@gridId").kendoGrid({
+                        dataSource: {
+                            data: data,
+                            pageSize: 10
+                        },
+                        pageable: true,
+                        sortable: true,
+                        filterable: true,
+                        columns: [
+                            {
+                                command: [
+                                    { name: "customDelete", text: "Delete", click: onDeleteClick },
+                                    { name: "customEdit", text: "Edit", click: onEditClick }
+                                ],
+                                title: "Actions",
+                                width: "180px"
+                            },
+                            { field: "statusDescription", title: "Status" },
+                            { field: "statusCode", title: "Code" },
+                            {
+                                field: "isActive",
+                                title: "Active?",
+                                template: "#= isActive ? '✔' : '' #"
+                            },
+                            {
+                                field: "isDefault",
+                                title: "Default?",
+                                template: "#= isDefault ? '✔' : '' #"
+                            }
+                        ]
+                    });
+                });
+            </script>
+        </div>
+    }
+</div>
+
+<script>
+    $(function () {
+        $("#tabstrip").kendoTabStrip({
+            animation: { open: { effects: "fadeIn" } }
+        });
+    });
+</script>
