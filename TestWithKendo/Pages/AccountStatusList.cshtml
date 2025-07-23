@@ -5,27 +5,11 @@
     ViewData["Title"] = "AccountStatusList";
 }
 
-<div class="aa-title">
-    <div>
-        <h1>
-            <i class="title-icon fas fa-file" aria-hidden="true"></i>
-            Account Status Maintenance
-            <a href="adminlist.asp" class="aa-command-button">
-                <i class="aa-icon fas fa-arrow-circle-left fa-fw" title="Return to Admin Panel" aria-hidden="true">
-                </i>
-            </a>
-        </h1>
-    </div>
-    <div id="aa-bank-logo-container">
-        <img src="/assets/img/rpslogo.png" alt="logo" id="customer-logo-image" />
-    </div>
-</div>
-
 <div id="tabstrip">
-    <ul>
+    <ul style="background: #9699c4;">
         @foreach (var accountClass in Model.AccountClass)
         {
-            <li>@accountClass.AccountClassName</li>
+            <li style="color: white; background: #afb1da !important;">CREDIT TASK GROUPS</li>
         }
     </ul>
 
@@ -36,7 +20,8 @@
         var accountStatusList = Html.Raw(Model.LoanAccountStatusList);
 
         <div>
-            <div id="addLoanSatus" onclick="openAddDialog(@accountClass.AccountClassId, false);" class="k-button k-primary">
+            <div id="addLoanSatus" onclick="openAddDialog(@accountClass.AccountClassId, false);" 
+            style="margin-bottom: 16px; color: white; background: #afb1da !important;" class="k-button k-primary">
                 Add New @accountClass.AccountClassName Status
             </div>
 
@@ -111,22 +96,23 @@
                             {
                                 command: [
                                     { name: "customDelete", text: "Delete", click: onDeleteClick },
-                                    { name: "customEdit", text: "Edit", click: onEditClick }
                                 ],
-                                title: "Actions",
+                                title: "Delete",
                                 width: "180px"
                             },
-                            { field: "StatusDescription", title: "Status" },
-                            { field: "StatusCode", title: "Code" },
+                            {
+                                command: [
+                                    { name: "customEdit", text: "Edit", click: onEditClick }
+                                ],
+                                title: "Edit",
+                                width: "180px"
+                            },
+                            { field: "StatusDescription", title: "Task Group Name" },
+                            { field: "StatusCode", title: "Number of Tasks" },
                             {
                                 field: "IsActive",
-                                title: "Active?",
+                                title: "Execution Type",
                                 template: "#= IsActive ? '✔' : '' #"
-                            },
-                            {
-                                field: "IsDefault",
-                                title: "Default?",
-                                template: "#= IsDefault ? '✔' : '' #"
                             }
                         ]
                     });
