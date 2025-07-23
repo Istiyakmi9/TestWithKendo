@@ -20,10 +20,12 @@ namespace TestWithKendo.Pages
 
         public IList<AccountClass> AccountClass { get;set; } = default!;
         public string LoanAccountStatusList = string.Empty;
+        public string AccountClassId = string.Empty;
 
         public async Task OnGetAsync()
         {
-            var loanAccountStatusList = await _accountStatusListService.LoadAccountStatus();
+            AccountClassId = Request.Query["accountClassId"];
+            var loanAccountStatusList = await _accountStatusListService.LoadAccountStatus(int.Parse(AccountClassId));
             LoanAccountStatusList = JsonConvert.SerializeObject(loanAccountStatusList);
 
             AccountClass = await _context.AccountClasses

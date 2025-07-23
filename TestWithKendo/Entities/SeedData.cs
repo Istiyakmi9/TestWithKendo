@@ -9,7 +9,8 @@ namespace TestWithKendo.Entities
             if (!context.AccountClasses.Any())
             {
                 context.AccountClasses.AddRange(
-                    new AccountClass { AccountClassId = 1, AccountClassName = "Loan", AccountClassCode = "loan", AccountClassSortOrder = 1 }
+                    new AccountClass { AccountClassId = 1, AccountClassName = "CREDIT TASK GROUPS", AccountClassCode = "CTG", AccountClassSortOrder = 1 },
+                    new AccountClass { AccountClassId = 2, AccountClassName = "ACCOUNT TASK GROUPS", AccountClassCode = "ATG", AccountClassSortOrder = 2 }
                 );
 
                 context.SaveChanges();
@@ -18,7 +19,8 @@ namespace TestWithKendo.Entities
             if (!context.LoanStatuses.Any())
             {
                 context.LoanStatuses.AddRange(
-                    new LoanStatus { StatusId = 1, StatusDescription = "Pending", StatusCode = "PEN", IsDefault = true, IsActive = true, AccountClassId = 1, IsApplicationStatus = false, AccountCount = 0 }
+                    new LoanStatus { StatusId = 1, StatusDescription = "Pending", StatusCode = "PEN", IsDefault = true, IsActive = true, AccountClassId = 1, IsApplicationStatus = false, AccountCount = 0 },
+                    new LoanStatus { StatusId = 2, StatusDescription = "Completed", StatusCode = "COM", IsDefault = true, IsActive = true, AccountClassId = 2, IsApplicationStatus = false, AccountCount = 0 }
                 );
 
                 context.SaveChanges();

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using TestWithKendo.DAL;
 using TestWithKendo.Entities;
 
@@ -41,10 +42,13 @@ namespace TestWithKendo.Pages
                 return Page();
             }
 
+            var lastRecord = _context.LoanStatuses.OrderByDescending(x => x.StatusId).First();
+            loanStatus.StatusId = lastRecord.StatusId + 1;
+
             _context.LoanStatuses.Add(loanStatus);
             _context.SaveChanges();
 
-            return RedirectToPage("/AccountStatusList");
+            return RedirectToPage("/accountstatuslist", new { accountClassId = 1 });
         }
     }
 }

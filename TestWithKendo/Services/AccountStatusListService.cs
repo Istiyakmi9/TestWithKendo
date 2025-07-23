@@ -12,13 +12,14 @@ namespace TestWithKendo.Services
             _context = context;
         }
 
-        public async Task<List<dynamic>> LoadAccountStatus()
+        public async Task<List<dynamic>> LoadAccountStatus(int accountClassId)
         {
             var result = (from ac in _context.AccountClasses
                           join ls in _context.LoanStatuses
                               on ac.AccountClassId equals ls.AccountClassId into gj
                           from ls in gj.DefaultIfEmpty()
-                          where ls.IsApplicationStatus == false || ls.IsApplicationStatus == null
+                          where ac.AccountClassId == accountClassId && 
+                          (ls.IsApplicationStatus == false || ls.IsApplicationStatus == null)
                           orderby ac.AccountClassSortOrder, ls.StatusDescription
                           select new
                           {
