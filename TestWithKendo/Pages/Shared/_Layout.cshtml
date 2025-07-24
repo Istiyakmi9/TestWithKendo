@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@inject IHttpContextAccessor HttpContextAccessor
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -8,7 +11,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TestWithKendo.styles.css" asp-append-version="true" />
     <link href="./css/styles.css" rel="stylesheet" />
-
+    
+    <link href="~/css/menu.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://kendo.cdn.telerik.com/themes/11.0.2/default/default-main.css" />
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2025.2.702/js/kendo.all.min.js"></script>
@@ -16,6 +20,166 @@
     <script src="./js/telerik-license.js"></script>
 </head>
 <body>
+
+
+
+
+    @{
+        var session = HttpContextAccessor.HttpContext.Session;
+
+        bool enableExpress = session.GetInt32("accuaccount.enableExpress") != 1;
+        bool isSuperUser = session.GetString("isSuperUser") == "True";
+        bool isAdmin = session.GetString("credit.isAdmin") == "True";
+        bool allowAdd = session.GetString("credit.allowAdd") == "True";
+        bool useBranchSecurity = session.GetString("UseBranchSecurity") == "Y";
+        int branchAccessCount = Convert.ToInt32(session.GetInt32("BranchAccessCount") ?? 0);
+        bool disableImaging = session.GetString("accuaccount.disableImaging") == "0";
+        bool showParticipationLoan = session.GetString("acculoan.showParticipationLoan") == "1";
+        bool enableNotices = session.GetInt32("accuaccount.enableNotices") == 1;
+        bool canManageNotice = session.GetString("AccuAccount.Notice::Manage") == "0";
+        bool canDistributeNotice = session.GetString("AccuAccount.Notice::Distribute") == "0";
+        bool canManageAudit = isSuperUser || session.GetString("AccuAccount.Audit::Manage") == "0";
+    }
+
+    <div id="aa-header-logo-container">
+        <a href="dashboard.asp" title="Go to the dashboard" id="pageTop"><img src="~/assets/Images/Nav/logo.png" alt="AccuSystems Logo" /></a>
+    </div>
+    <nav>
+        <div>
+            <ul id="nav">
+                <li><a href="dashboard.asp" class="menu" id="mmenu0">Dashboard</a></li>
+
+                <li>
+                    <a href="home.asp" class="menu" id="mmenu1" onmouseover="mopen(1);" onmouseout="mclosetime();">Search</a>
+                    <div class="submenu" id="menu1" onmouseover="mcancelclosetime()" onmouseout="mclosetime();">
+                        @if (enableExpress)
+                        {
+                            <a href="searchq1.asp?searchType=Exception">Exceptions</a>
+                        }
+                        <a href="searchq1.asp?searchType=Existing">Existing Documents</a>
+                        <a href="searchq1.asp?searchType=Expired">Expired Documents</a>
+                        <a href="searchq1.asp?searchType=Missing">Missing Documents</a>
+                        <a href="searchq1.asp?searchType=Waived">Waived Documents</a>
+                    </div>
+                </li>
+
+                <li>
+                    <a href="#" class="menu" id="mmenu2" onmouseover="mopen(2);" onmouseout="mclosetime();">User</a>
+                    <div class="submenu" id="menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime();">
+                        <a href="user_barcode_cover_sheet.asp" target="_blank">Print User Barcode Covers</a>
+                    </div>
+                </li>
+
+                <li>
+                    <a href="#" class="menu" id="mmenu3" onmouseover="mopen(3);" onmouseout="mclosetime();">Reporting</a>
+                    <div class="submenu" id="menu3" onmouseover="mcancelclosetime()" onmouseout="mclosetime();">
+                        <a href="dynamicreporting.asp">My Reports</a>
+                        <a href="exceptionreports.asp?mode=checklist">Checklists</a>
+                        <a href="exceptionreports.asp?mode=classifiedaccounts">Classified Accounts</a>
+                        @if (enableExpress)
+                        {
+                            <a href="exceptionreports.asp?mode=crosscollaterals">Cross Collaterals</a>
+                            <a href="exceptionreports.asp">Exception Reports</a>
+                        }
+                        <a href="exceptionreports.asp?mode=expiringdocuments">Expiring Documents</a>
+                        @if (enableExpress)
+                        {
+                            <a href="exceptionreports.asp?mode=accountapplications">Account Applications</a>
+                            <a href="exceptionreports.asp?mode=policyexceptions">Policy Exceptions</a>
+                            <a href="exceptionreports.asp?mode=relatedentities">Related Entities</a>
+                        }
+                        @if (showParticipationLoan)
+                        {
+                            <a href="exceptionreports.asp?mode=participations">Participation Loans</a>
+                        }
+                        <a href="sh_search.asp?action=SCAN">Document History</a>
+                        @if (disableImaging)
+                        {
+                            <a href="sh_search.asp?action=VIEW">Documents Viewed</a>
+                        }
+                    </div>
+                </li>
+
+                @if (allowAdd || isAdmin || isSuperUser)
+                {
+                    if (isSuperUser || !useBranchSecurity || (useBranchSecurity && branchAccessCount > 0))
+                    {
+                        <li><a href="customermaintadd.asp?state=INITIAL&action=ADD" class="menu" id="mmenu4">Add Customer</a></li>
+                    }
+                    else
+                    {
+                        <li>
+                            <a href="javascript:void(0);" class="menu" id="mmenu4" style="cursor:default;">
+                                <span title="Cannot add Customers because you do not have access to any Branches">Add Customer</span>
+                            </a>
+                        </li>
+                    }
+                }
+
+                @if (disableImaging && canManageAudit)
+                {
+                    <li><a href="auditlist.asp" class="menu" id="mmenu5">Audit</a></li>
+                }
+
+                @if (enableExpress)
+                {
+                    <li>
+                        <a href="#" class="menu" id="mmenu6" onmouseover="mopen(6);" onmouseout="mclosetime();">Exceptions</a>
+                        <div class="submenu" id="menu6" onmouseover="mcancelclosetime()" onmouseout="mclosetime();">
+                            <a href="exceptionbankselection.asp">Exception Maintenance</a>
+                            <a href="PolicyMaintenance.asp">Policy Exception Maintenance</a>
+                            <a href="taskgrouplist.asp">Task List Maintenance</a>
+                            <a href="contactMaint.asp">Contacts Maintenance</a>
+                            <a href="contactTypeMaint.asp">Contact Types Maintenance</a>
+                        </div>
+                    </li>
+                }
+
+                @if (enableExpress && enableNotices && (isSuperUser || canManageNotice || canDistributeNotice))
+                {
+                    <li>
+                        <a href="#" class="menu" id="mmenu7" onmouseover="mopen(7);" onmouseout="mclosetime();">Notices</a>
+                        <div class="submenu" id="menu7" onmouseover="mcancelclosetime()" onmouseout="mclosetime();">
+                            @if (isSuperUser || canManageNotice)
+                            {
+                                <a href="noticeadmin.asp">Notice Administration</a>
+                            }
+                            @if (isSuperUser || canDistributeNotice)
+                            {
+                                <a href="noticedistribution.asp">Notice Distribution</a>
+                            }
+                        </div>
+                    </li>
+                }
+
+                <li><a href="adminlist.asp" class="menu" id="mmenu8">Admin</a></li>
+                <li><a href="logoff.asp" class="menu" id="mmenu19">Sign Out</a></li>
+            </ul>
+        </div>
+        <div id="head-search-wrapper">
+            <div class="aa-icon-block" id="cog"><i class="fas fa-cog fa-fw" title="Change User Password" id="header-config" aria-hidden="true"></i></div>
+            <div id="notification-no-count"><i class="fas fa-bell fa-fw" aria-hidden="true"></i></div>
+            <div id="notification-count">0</div>
+            <div id="notification-user-wrapper">Developer Account</div>
+        </div>
+    </nav>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* 
     <header class="main-header">
         <div class="yellow-block"></div>
         <div class="triangle"></div>
@@ -50,8 +214,8 @@
                 </span>
             </div>
         </div>
-    </header>
-    <div style="padding: 1rem 10px; height: 100vh; background: #d7e2f6;">
+    </header> *@
+    <div>
         <main role="main-1" class="col-md-12 col-lg-12 pb-3">
             @RenderBody()
         </main>

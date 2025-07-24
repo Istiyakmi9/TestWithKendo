@@ -17,7 +17,7 @@
     }
 </style>
 
-<div id="tabstrip">
+<div id="tabstrip" style="padding: 1rem 10px; height: 100vh; background: #d7e2f6;">
     <ul style="background: #9397cc;">
         @foreach (var accountClass in Model.AccountClass)
         {
@@ -77,28 +77,29 @@
                 }
 
                 function onEditClick() {
-                    alert('edit')
+                    window.location.href = "/ManageAccountStatus"
                 }
 
                 function openAddDialog(accountClassId, action) {
-                    $("#accountStatusWindow").kendoWindow({
-                        width: "600px",
-                        title: (action === 'ADD' ? "Add" : "Edit") + " Loan Status",
-                        visible: false,
-                        modal: true,
-                        actions: ["Close"],
-                        content: {
-                            url: "/AccountStatusMain", // Razor Page without .cshtml
-                            data: { accountClassId: accountClassId, action: action },
-                            type: "GET"
-                        },
-                        open: function () {
-                            this.center();
-                        },
-                        refresh: function () {
-                            // You can bind Kendo UI widgets here if needed
-                        }
-                    }).data("kendoWindow").center().open();
+                    window.location.href = "/ManageAccountStatus?accountClassId=" + accountClassId;
+                    // $("#accountStatusWindow").kendoWindow({
+                    //     width: "600px",
+                    //     title: (action === 'ADD' ? "Add" : "Edit") + " Loan Status",
+                    //     visible: false,
+                    //     modal: true,
+                    //     actions: ["Close"],
+                    //     content: {
+                    //         url: "/AccountStatusMain", // Razor Page without .cshtml
+                    //         data: { accountClassId: accountClassId, action: action },
+                    //         type: "GET"
+                    //     },
+                    //     open: function () {
+                    //         this.center();
+                    //     },
+                    //     refresh: function () {
+                    //         // You can bind Kendo UI widgets here if needed
+                    //     }
+                    // }).data("kendoWindow").center().open();
                 }
 
                 function openKendoDialog(title, url, width, height) {

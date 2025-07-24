@@ -13,6 +13,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseInMemoryDatabase("AccuAccount_Database"));
 
 builder.Services.AddScoped<AccountStatusListService>();
+builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
 
 
 builder.Services.AddRazorPages();
@@ -30,6 +32,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
 }
+
+app.UseSession();
 app.UseStaticFiles();
 
 app.UseRouting();
