@@ -45,14 +45,14 @@
 
 nav {
     background-color: #3B3B3B;
-    height: 24px;
+    height: 32px;
     padding-left: 150px;
     min-width: 1000px;
     box-sizing: border-box;
 }
 
     nav > div {
-        height: 24px;
+        height: 32px;
         float: left;
     }
 

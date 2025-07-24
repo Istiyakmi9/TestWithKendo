@@ -11,18 +11,24 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TestWithKendo.styles.css" asp-append-version="true" />
     <link href="./css/styles.css" rel="stylesheet" />
-    
+
+    <script src="~/Packages/jquery/jquery.min.js"></script>
     <link href="~/css/menu.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/themes/11.0.2/default/default-main.css" />
+
+
+ @*    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/themes/11.0.2/default/default-main.css" />
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2025.2.702/js/kendo.all.min.js"></script>
 
-    <script src="./js/telerik-license.js"></script>
+    <script src="./js/telerik-license.js"></script> *@
+    <style>
+        .logo-icon {
+            width: 94px;
+            height: 55px;
+        }
+    </style>
 </head>
 <body>
-
-
-
 
     @{
         var session = HttpContextAccessor.HttpContext.Session;
@@ -42,7 +48,8 @@
     }
 
     <div id="aa-header-logo-container">
-        <a href="dashboard.asp" title="Go to the dashboard" id="pageTop"><img src="~/assets/Images/Nav/logo.png" alt="AccuSystems Logo" /></a>
+        <a href="dashboard.asp" title="Go to the dashboard" id="pageTop">
+            <img src="~/assets/Images/Nav/logo.png" class="logo-icon" alt="AccuSystems Logo" /></a>
     </div>
     <nav>
         <div>
