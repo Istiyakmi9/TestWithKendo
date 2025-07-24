@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../kendo-ui/styles/kendo.common-material.core.min.css" />
+    <link rel="stylesheet" type="text/css" href="../kendo-ui/styles/kendo.common-material.min.css" />
+    <link rel="stylesheet" type="text/css" href="../kendo-ui/styles/AccuAccount/kendo.custom.css" />
+    <link rel="stylesheet" type="text/css" href="../kendo-ui/styles/kendo.material.mobile.min.css" />
+    <link href="../../Content/App/App.all.min.css" rel="stylesheet" />
+    <link href="../../Content/Core.css" rel="stylesheet" />
+</head>
+<body class="aa-background aa-pad-md">
+    <main style="display: none">
+        <h1>Kendo DatePicker</h1>
+        <br />
+        <h2 class="aa-pad-sm">Base Widget</h2>
+        <div id="form-base" class="aa-widget aa-pad-md">
+            <input type="date"
+                   id="base-widget"
+                   name="base-widget"
+                   data-type="date" />
+            <span class="k-invalid-msg" data-for="base-widget"></span>
+        </div>
+
+        <h2 class="aa-pad-sm">Extended Widget (jQuery)</h2>
+        <div id="form-jquery" class="aa-widget aa-pad-md">
+            <input type="date"
+                   id="extended-widget-jquery"
+                   name="extended-widget-jquery"
+                   data-type="date" />
+            <span class="k-invalid-msg" data-for="extended-widget-jquery"></span>
+        </div>
+
+        <h2 class="aa-pad-sm">Extended Widget (MVVM)</h2>
+        <div id="form-mvvm" class="aa-widget aa-pad-md">
+            <input type="date"
+                   id="extended-widget-mvvm"
+                   name="extended-widget-mvvm"
+                   data-role="configureddatepicker"
+                   data-type="date"
+                   data-date-msg="Value is not a valid date."
+                   data-mindate-msg="Minimum date must be later or equal to 1/1/1753"
+                   data-maxdate-msg="Maximum date must be prior or equal to 12/31/9999"
+                   data-bind="value: date"
+                   required />
+            <span class="k-invalid-msg" data-for="extended-widget-mvvm"></span>
+
+            <br />
+            <br />
+            <input type="checkbox" class="k-checkbox" id="c" data-bind="checked: isChecked, events: { change: isCheckedChanged }"><label for="c" class="k-checkbox-label">Required</label>
+
+            <br />
+            <br />
+
+            <button data-role="button" data-bind="click: changeDate">Set Date</button>
+
+            <br />
+            <br />
+
+            <span>Current date is:</span> <span data-bind="text: date" />
+        </div>
+    </main>
+
+    <script src="../jquery/jquery.min.js"></script>
+    <script src="../kendo-ui/js/kendo.all.min.js"></script>
+    <script src="kendo.culture.en-US.js"></script>
+    <script src="kendo.validatorrules.js"></script>
+    <script src="kendo.datepicker.js"></script>
+    <script type="text/javascript">
+        kendo.ui.progress($(document.body), true);
+
+        // Base Widget
+        (function () {
+            $("#base-widget").kendoDatePicker();
+        })();
+
+        // Extended Widget (jQuery)
+        (function () {
+            $("#extended-widget-jquery").kendoConfiguredDatePicker();
+
+            $("#form-jquery").kendoValidator({
+                rules: {
+                    date:    KendoValidatorRules.date,
+                    mindate: KendoValidatorRules.mindate,
+                    maxdate: KendoValidatorRules.maxdate
+                },
+                messages: {
+                    date: "Value is not a valid date.",
+                    mindate: "Minimum date must be later or equal to 1/1/1753",
+                    maxdate: "Maximum date must be prior or equal to 12/31/9999"
+                }
+            });
+
+            var datePicker = $("#extended-widget-jquery").data("kendoConfiguredDatePicker");
+        })();
+
+        // Extended Widget (MVVM)
+        (function () {
+            $("#form-mvvm").kendoValidator({
+                rules: {
+                    date:    KendoValidatorRules.date,
+                    mindate: KendoValidatorRules.mindate,
+                    maxdate: KendoValidatorRules.maxdate
+                }
+            });
+
+            var viewModel = kendo.observable({
+                date: null,
+                changeDate: function () {
+                    this.set("date", new Date("1/1/2010"));
+                    $("#form-mvvm").data("kendoValidator").validate(); // violates mvvm, but just for demonstration
+                },
+                isChecked: true,
+                isCheckedChanged: function (e) {
+                    $("#extended-widget-mvvm").prop("required", this.get("isChecked")); // violates mvvm, but just for demonstration
+                    $("#form-mvvm").data("kendoValidator").validate(); // violates mvvm, but just for demonstration
+                }
+            });
+
+            kendo.bind($("#form-mvvm"), viewModel);
+        })();        
+
+        setTimeout(function () {
+            kendo.ui.progress($(document.body), false);
+            $("main").show();
+        }, 1000);
+    </script>
+</body>
+</html>

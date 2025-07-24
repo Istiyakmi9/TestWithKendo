@@ -1,0 +1,7 @@
+﻿.k-custom-dialog.k-content {
+    padding: 0;
+}
+
+.k-custom-dialog-content .k-content {
+    box-sizing: border-box;
+}
