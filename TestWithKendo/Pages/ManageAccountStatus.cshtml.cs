@@ -44,15 +44,15 @@ namespace TestWithKendo.Pages
                 return Page();
             }
 
-            if (TaskGroupTypes.TaskGroupId != 0)
+            if (TaskGroupTypes.TaskGroupId == 0)
             {
                 var lastRecord = _context.TaskGroupTypes.OrderByDescending(x => x.TaskGroupId).First();
                 TaskGroupTypes.TaskGroupId = lastRecord.TaskGroupId + 1;
-                
+
                 //this i filled only for testing 
-                TaskGroupTypes.TaskGroupLabel = "Credit";
-                TaskGroupTypes.TaskProcessing = "C";
-                
+                string processing = TaskGroupTypes.TaskProcessing; // "C" or "L"
+                string label = TaskGroupTypes.TaskGroupLabel;
+
                 _context.TaskGroupTypes.Add(TaskGroupTypes);
             }
             else
@@ -63,7 +63,7 @@ namespace TestWithKendo.Pages
 
             _context.SaveChanges();
 
-            return RedirectToPage("/TaskGroupList", new { bankid = BankId });
+            return RedirectToPage("/TaskGroupList", new { bankid = "1" });
         }
     }
 }

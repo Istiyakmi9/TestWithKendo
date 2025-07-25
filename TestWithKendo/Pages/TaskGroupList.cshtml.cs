@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Collections.Generic;
 using TestWithKendo.DAL;
 using TestWithKendo.Entities;
 
 namespace TestWithKendo.Pages
 {
-    public class TaskGroupListModel(ApplicationDbContext _context, IConfiguration _config) : PageModel
+    public class TaskGroupListModel(ApplicationDbContext _context) : PageModel
     {
         public string BankId { get; set; }
         public string BankName { get; set; }

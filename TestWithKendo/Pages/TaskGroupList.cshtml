@@ -79,102 +79,113 @@
 <div class="aa-pad-md content">
     <div id="aa-task-groups" style="height: 100vh;" class="p-3">
         <ul class="strip-color m-0 p-0">
-            <li class="text-white @(Model.Tab == "C" ? "k-state-active tab-active" : "")">Credit Task Groups</li>
-            <li class="text-white @(Model.Tab != "C" ? "k-state-active tab-active" : "")">Account Task Groups</li>
+            <li class="text-white @(Model.Tab == "C" ? "k-state-active tab-active" : "")" onclick="window.location.href='/TaskGroupList?bankid=1&tab=C'">Credit Task Groups</li>
+            <li class="text-white @(Model.Tab != "C" ? "k-state-active tab-active" : "")" onclick="window.location.href='/TaskGroupList?bankid=1&tab=L'">Account Task Groups</li>
         </ul>
 
         @if (!Model.TaskGroupTypeRecords.Any())
         {
-            <div class="common">No Task Groups defined.</div>
+            <div id="aa-task-groups-content" style="padding: 1rem !important; display: block;">
+                <div class="common add-new-group-button">
+                    <a class="button-color button-style k-button k-primary"
+                       asp-page="/ManageAccountStatus"
+                       asp-route-action="ADD"
+                       asp-route-taskGroupType="na"
+                       asp-route-bankId="0">
+                        <i class="aa-icon fas fa-plus-circle"></i>&nbsp;&nbsp;Add New Credi Task Group
+                    </a>
+                </div>
+                <div class="common">No Task Groups defined.</div>
+            </div>
         }
         else
         {
-            @foreach (var taskGroupType in Model.TaskGroupTypeRecords)
-            {
-                var gridId = $"taskGroupGrid-{taskGroupType.TaskGroupId}";
+            <div id="aa-task-groups-content" style="padding: 1rem !important; display: block;">
+                <div class="common add-new-group-button">
+                    <a class="button-color button-style k-button k-primary"
+                       asp-page="/ManageAccountStatus"
+                       asp-route-action="ADD"
+                       asp-route-taskGroupType="na"
+                       asp-route-bankId="0">
+                        <i class="aa-icon fas fa-plus-circle"></i>&nbsp;&nbsp;Add New Credi Task Group
+                    </a>
+                </div>
 
-                <div id="aa-@taskGroupType.TaskGroupId.ToString().ToLower()-task-groups-content" style="padding: 1rem !important; display:@(Model.Tab == taskGroupType.TaskProcessing ? "block" : "none")">
-                    <div class="common add-new-group-button">
-                        <a class="button-color button-style k-button k-primary"
-                           asp-page="/ManageAccountStatus"
-                           asp-route-action="ADD"
-                           asp-route-taskGroupType="@taskGroupType.TaskProcessing"
-                           asp-route-bankId="0">
-                            <i class="aa-icon fas fa-plus-circle"></i>&nbsp;&nbsp;Add New @taskGroupType.TaskGroupLabel Group
-                        </a>
-                    </div>
-                    <div id="@gridId"></div>
+                <div id="taskGroupGrid"></div>
 
-                    <script>
-                        $(document).ready(function () {
-                            $("#@gridId").kendoGrid({
-                                dataSource: {
-                                    data: @Html.Raw(Json.Serialize(taskGroupType)),
-                                    schema: {
-                                        model: {
-                                            fields: {
-                                                TaskGroupId: { type: "number" },
-                                                TaskGroupLabel: { type: "string" },
-                                                TaskCount: { type: "number" },
-                                                TaskProcessing: { type: "string" },
-                                                ExceptionCount: { type: "number" }
-                                            }
-                                        }
-                                    },
-                                    pageSize: 10
-                                },
-                                scrollable: false,
-                                sortable: true,
-                                pageable: false,
-                                columns: [
-                                    {
-                                        field: "TaskGroupId",
-                                        title: "Delete",
-                                        template: function (dataItem) {
-                                            if (dataItem.ExceptionCount == 0) {
-                                                return `<a href="javascript:void(0);" onclick="openKendoDialog('Delete Group',
-                                                               '/TaskGroupDeleteConfirm?taskGroupId=${dataItem.TaskGroupId}&taskGroupId=@taskGroupType.TaskGroupId&bankId=@Model.BankId',
-                                                                500, 700)" class="aa-command-link">
-                                                                <i class="aa-icon fas fa-trash-alt fa-fw" title="Delete Group"></i></a>`;
-                                            } else {
-                                                return `<i class="aa-icon fas fa-trash-alt fa-fw disabled"
-                                                        title="Cannot delete: group has exceptions"></i>`;
-                                            }
-                                        },
-                                        width: 100
-                                    },
-                                    {
-                                        field: "TaskGroupId",
-                                        title: "Edit",
-                                        template: function (dataItem) {
-                                            return `<a href="/TaskGroupMaint?handler=edit&taskGroupId=${dataItem.TaskGroupId}&taskGroupId=@taskGroupType.TaskGroupId&bankId=@Model.BankId"
-                                                    class="aa-command-link">
-                                                    <i class="aa-icon fas fa-pencil-alt fa-fw" title="Edit Group"></i></a>`;
-                                        },
-                                        width: 100
-                                    },
-                                    {
-                                        field: "TaskGroupLabel",
-                                        title: "Task Group Name",
-                                        template: function (dataItem) {
-                                            return dataItem.TaskGroupLabel != "" ? "Credit Task" : "NA";
-                                        }
-                                    },
-                                    { field: "TaskCount", title: "Number of Tasks" },
-                                    {
-                                        field: "TaskProcessing",
-                                        title: "Processing Type",
-                                        template: function (dataItem) {
-                                            return dataItem.TaskProcessing == "P" ? "Execute all Tasks" : "Execute Tasks in Order";
+                <script>
+                    $(document).ready(function () {
+                        $("#taskGroupGrid").kendoGrid({
+                            dataSource: {
+                                data: @Html.Raw(Json.Serialize(Model.TaskGroupTypeRecords)),
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            TaskGroupId: { type: "number" },
+                                            TaskGroupLabel: { type: "string" },
+                                            TaskCount: { type: "number" },
+                                            TaskProcessing: { type: "string" },
+                                            ExceptionCount: { type: "number" }
                                         }
                                     }
-                                ]
-                            });
+                                },
+                                pageSize: 10
+                            },
+                            scrollable: false,
+                            sortable: true,
+                            pageable: false,
+                            columns: [
+                                {
+                                    field: "TaskGroupId",
+                                    title: "Delete",
+                                    template: function (dataItem) {
+                                        if (dataItem.ExceptionCount == 0) {
+                                            var url = `/ManageAccountStatus?taskGroupId=${dataItem.taskGroupId}&bankId=@Model.BankId`;
+                                            return `<a href="javascript:void(0);" onclick="openKendoDialog('Delete Group', ${url}, 500, 700)" class="aa-command-link">
+                                                                                                                                        <i class="aa-icon fas fa-trash-alt fa-fw" title="Delete Group"></i>
+                                                                                                                                        </a>`;
+                                        } else {
+                                            return `<i class="aa-icon fas fa-trash-alt fa-fw disabled"
+                                                                                                            title="Cannot delete: group has exceptions"></i>`;
+                                        }
+                                    },
+                                    width: 100
+                                },
+                                {
+                                    field: "TaskGroupId",
+                                    title: "Edit",
+                                    template: function (dataItem) {
+                                        var url = `/ManageAccountStatus?action=EDIT&taskGroupType=${dataItem.taskGroupId}&bankId=@Model.BankId`;
+                                        return `<a href="${url}" class="aa-command-link">
+                                                                                                                                                        <i class="aa-icon fas fa-pencil-alt fa-fw" title="Edit Group"></i>
+                                                                                                                                                    </a>`;
+                                    },
+                                    width: 100
+                                },
+                                {
+                                    field: "TaskGroupLabel",
+                                    title: "Task Group Name",
+                                    template: function (dataItem) {
+                                        return dataItem.taskGroupLabel;
+                                    }
+                                },
+                                {
+                                    field: "TaskCount", title: "Number of Tasks", template: function (data) {
+                                        return data.taskCount;
+                                    }
+                                },
+                                {
+                                    field: "TaskProcessing",
+                                    title: "Processing Type",
+                                    template: function (dataItem) {
+                                        return dataItem.taskProcessing == "P" ? "Execute all Tasks" : "Execute Tasks in Order";
+                                    }
+                                }
+                            ]
                         });
-                    </script>
-                </div>
-            }
-
+                    });
+                </script>
+            </div>
         }
 
     </div>

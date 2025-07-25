@@ -50,9 +50,10 @@
     <form method="post" asp-page-handler="Save" id="frmAccountStatusMaint" class="p-3" style="padding-bottom: 1rem;
     border-bottom: 1px solid #d9d9d9;">
         <input type="hidden" name="Action" value="Add" />
-        <input type="hidden" name="TaskGroupId" value="@Model.TaskGroupTypes.TaskGroupId" />
-        <input type="hidden" name="TaskProcessing" value="@Model.TaskGroupTypes.TaskProcessing" />
-        <input type="hidden" name="TaskGroupLabel" value="@Model.TaskGroupTypes.TaskGroupLabel" />
+        <input type="hidden" asp-for="TaskGroupTypes.TaskGroupId" value="@Model.TaskGroupTypes.TaskGroupId" />
+        <input type="hidden" asp-for="TaskGroupTypes.ExceptionCount" value="@Model.TaskGroupTypes.ExceptionCount" />
+        <input type="hidden" asp-for="TaskGroupTypes.TaskCount" value="@Model.TaskGroupTypes.TaskCount" />
+
         <table class="aa-two-column-form-table">
             <tr>
                 <td>
@@ -62,7 +63,7 @@
                 </td>
                 <td>
                     <div class="gap">
-                        <input type="text" class="k-textbox group-name" name="StatusDescription" value="@Model.TaskGroupTypes.TaskGroupLabel" size="40" />
+                        <input type="text" class="k-textbox group-name" asp-for="TaskGroupTypes.TaskGroupLabel" size="40" />
                     </div>
                 </td>
             </tr>
@@ -74,9 +75,9 @@
                 </td>
                 <td>
                     <div class="gap">
-                        <select id="cboTaskProcessing" name="TaskProcessing">
-                            <option value="0" selected="@(Model.TaskGroupTypes.TaskProcessing == "C" ? "selected" : "")">Credit</option>
-                            <option value="1" selected="@(Model.TaskGroupTypes.TaskProcessing == "L" ? "selected" : "")">Loan</option>
+                        <select id="cboTaskProcessing" asp-for="TaskGroupTypes.TaskProcessing">
+                            <option value="C" data-label="Credit" selected="@(Model.TaskGroupTypes.TaskProcessing == "C" ? "selected" : "")">Credit</option>
+                            <option value="L" data-label="Loan" selected="@(Model.TaskGroupTypes.TaskProcessing == "L" ? "selected" : "")">Loan</option>
                         </select>
                     </div>
                 </td>
@@ -103,7 +104,13 @@
         </table>
         <div class="aa-button-wrapper-absolute">
             <div style="margin-top: 20px;">
-                <button id="btnUpdate" type="button" class="button-style button-color text-white k-button" onclick="validate();" style="margin-right: 10px;">Update</button>
+                @*  <button id="btnUpdate" type="button" class="button-style button-color text-white k-button" onclick="validate();" style="margin-right: 10px;">Update</button> *@
+                <button id="btnUpdate"
+                        type="submit"
+                        class="button-style button-color text-white k-button"
+                        style="margin-right: 10px;">
+                    @(Request.Query["bankId"] == "0" ? "Add" : "Update")
+                </button>
                 <button id="btnCancel" type="button" class="button-style k-button bg-white" style="color: #62a3be !important" onclick="parent.closeKendoDialog();">Cancel</button>
             </div>
         </div>
@@ -132,13 +139,27 @@
 
         function validate() {
             var form = document.getElementById('frmAccountStatusMaint');
-            if (!form.StatusDescription.value) {
+            if (!form.TaskGroupName.value) {
                 alert('Please enter the status name');
-                form.StatusDescription.focus();
+                form.TaskGroupName.focus();
                 return;
             }
 
             form.submit();
         }
+        function updateTaskGroupValues() {
+            var select = document.getElementById("cboTaskProcessing");
+            var selectedOption = select.options[select.selectedIndex];
+            var processingValue = selectedOption.value;
+            var labelValue = selectedOption.getAttribute("data-label");
+
+            document.getElementById("TaskGroupProcessing").value = processingValue;
+            document.getElementById("TaskGroupLabel").value = labelValue;
+        }
+
+        // Optional: Trigger update on page load in case selected option is not default
+        document.addEventListener("DOMContentLoaded", function () {
+            //updateTaskGroupValues();
+        });
     </script>
 </div>
