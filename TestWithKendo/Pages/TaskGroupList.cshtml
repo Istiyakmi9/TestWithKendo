@@ -5,6 +5,8 @@
 }
 <link href="~/Packages/kendo-ui/styles/kendo.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Packages/kendo-ui/styles/kendo.common.min.css" rel="stylesheet" />
+<link href="./css/styles.css" rel="stylesheet" />
+
 <!-- Add CSS styles directly -->
 <style>
     .content {
@@ -31,21 +33,42 @@
     .fa-trash-alt.disabled {
         color: #C3C3C3 !important;
     }
+
+    .k-grid-header .k-header a {
+        color: #827c7c !important;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .k-grid tbody tr td {
+        font-size: 16px;
+        font-weight: bold;
+        color: #7e5555 !important;
+    }
+
+    .aa-icon {
+        font-size: 14px;
+        padding-left: 6px;
+    }
+
+    .aa-command-link > i {
+        color: #62a3be;
+    }
 </style>
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <script src="~/Packages/jquery/jquery.min.js"></script>
 <script src="~/Packages/kendo-ui/js/kendo.all.min.js"></script>
 
-<div class="aa-title">
-    <div class="d-flex justify-content-between" style="margin-left: 9rem;">
-        <h1>
+<div class="aa-title" style="background: rgb(245 245 245); border: 1px solid #d9d9d9;">
+    <div class="d-flex justify-content-between" style="margin-left: 9rem; height: 40px; align-items: center;">
+        <div style="font-weight: 600; color: #545454;">
             <i class="title-icon fas fa-file-alt"></i>
             Task Group Maintenance
-            <a asp-page="/AdminList" class="aa-command-button">
+            <a asp-page="/AdminList" class="ps-1 aa-command-button arrow-icon">
                 <i class="aa-icon fas fa-arrow-circle-left fa-fw" title="Return to Admin Area"></i>
             </a>
-        </h1>
+        </div>
         <div id="aa-bank-logo-container">
             <img src="/customer/logo/customerlogo.gif" alt="logo" id="customer-logo-image" />
             <span>@Model.BankName</span>
@@ -54,105 +77,106 @@
 </div>
 
 <div class="aa-pad-md content">
-    <div id="aa-task-groups">
-        <ul>
-            <li class="@(Model.Tab == "C" ? "k-state-active" : "")">Credit Task Groups</li>
-            <li class="@(Model.Tab == "L" ? "k-state-active" : "")">Account Task Groups</li>
+    <div id="aa-task-groups" style="height: 100vh;" class="p-3">
+        <ul class="strip-color m-0 p-0">
+            <li class="text-white @(Model.Tab == "C" ? "k-state-active tab-active" : "")">Credit Task Groups</li>
+            <li class="text-white @(Model.Tab != "C" ? "k-state-active tab-active" : "")">Account Task Groups</li>
         </ul>
 
-        @foreach (var pair in new[] { ("Credit", Model.CreditGroups, "C"), ("Account", Model.AccountGroups, "L") })
+        @if (!Model.TaskGroupTypeRecords.Any())
         {
-            var gridId = $"taskGroupGrid-{pair.Item3}";
+            <div class="common">No Task Groups defined.</div>
+        }
+        else
+        {
+            @foreach (var taskGroupType in Model.TaskGroupTypeRecords)
+            {
+                var gridId = $"taskGroupGrid-{taskGroupType.TaskGroupId}";
 
-            <div id="aa-@pair.Item1.ToLower()-task-groups-content" style="display:@(Model.Tab == pair.Item3 ? "block" : "none")">
-                <div class="common add-new-group-button">
-                    <a class="k-button k-primary"
-                       asp-page="/TaskGroupMaint"
-                       asp-route-action="ADD"
-                       asp-route-taskGroupType="@pair.Item3"
-                       asp-route-bankId="@Model.BankId">
-                        <i class="aa-icon fas fa-plus-circle"></i>&nbsp;&nbsp;Add New @pair.Item1 Task Group
-                    </a>
-                </div>
-
-                @if (!pair.Item2.Any())
-                {
-                    <div class="common">No @pair.Item1 Task Groups defined.</div>
-                }
-                else
-                {
+                <div id="aa-@taskGroupType.TaskGroupId.ToString().ToLower()-task-groups-content" style="padding: 1rem !important; display:@(Model.Tab == taskGroupType.TaskProcessing ? "block" : "none")">
+                    <div class="common add-new-group-button">
+                        <a class="button-color button-style k-button k-primary"
+                           asp-page="/ManageAccountStatus"
+                           asp-route-action="ADD"
+                           asp-route-taskGroupType="@taskGroupType.TaskProcessing"
+                           asp-route-bankId="0">
+                            <i class="aa-icon fas fa-plus-circle"></i>&nbsp;&nbsp;Add New @taskGroupType.TaskGroupLabel Group
+                        </a>
+                    </div>
                     <div id="@gridId"></div>
 
                     <script>
-                $(document).ready(function () {
-                    $("#@gridId").kendoGrid({
-                        dataSource: {
-                            data: @Html.Raw(Json.Serialize(pair.Item2)),
-                            schema: {
-                                model: {
-                                    fields: {
-                                        TaskGroupId: { type: "number" },
-                                        TaskGroupLabel: { type: "string" },
-                                        TaskCount: { type: "number" },
-                                        TaskProcessing: { type: "string" },
-                                        ExceptionCount: { type: "number" }
-                                    }
-                                }
-                            },
-                            pageSize: 10
-                        },
-                        scrollable: false,
-                        sortable: true,
-                        pageable: false,
-                        columns: [
-                            {
-                                field: "TaskGroupId",
-                                title: "Delete",
-                                template: function (dataItem) {
-                                    if (dataItem.ExceptionCount == 0) {
-                                        return `<a href="javascript:void(0);" onclick="openKendoDialog('Delete Group',
-                                            '/TaskGroupDeleteConfirm?taskGroupId=${dataItem.TaskGroupId}&taskGroupType=@pair.Item3&bankId=@Model.BankId',
-                                            500, 700)" class="aa-command-link">
-                                            <i class="aa-icon fas fa-trash-alt fa-fw" title="Delete Group"></i></a>`;
-                                    } else {
-                                        return `<i class="aa-icon fas fa-trash-alt fa-fw disabled"
-                                                   title="Cannot delete: group has exceptions"></i>`;
-                                    }
+                        $(document).ready(function () {
+                            $("#@gridId").kendoGrid({
+                                dataSource: {
+                                    data: @Html.Raw(Json.Serialize(taskGroupType)),
+                                    schema: {
+                                        model: {
+                                            fields: {
+                                                TaskGroupId: { type: "number" },
+                                                TaskGroupLabel: { type: "string" },
+                                                TaskCount: { type: "number" },
+                                                TaskProcessing: { type: "string" },
+                                                ExceptionCount: { type: "number" }
+                                            }
+                                        }
+                                    },
+                                    pageSize: 10
                                 },
-                                width: 100
-                            },
-                            {
-                                field: "TaskGroupId",
-                                title: "Edit",
-                                template: function (dataItem) {
-                                    return `<a href="/TaskGroupMaint?handler=edit&taskGroupId=${dataItem.TaskGroupId}&taskGroupType=@pair.Item3&bankId=@Model.BankId"
-                                            class="aa-command-link">
-                                            <i class="aa-icon fas fa-pencil-alt fa-fw" title="Edit Group"></i></a>`;
-                                },
-                                width: 100
-                            },
-                            {
-                                field: "TaskGroupLabel",
-                                title: "Task Group Name",
-                                template: function (dataItem) {
-                                    return dataItem.TaskGroupLabel != "" ? "Credit Task" : "NA";
-                                }
-                            },
-                            { field: "TaskCount", title: "Number of Tasks" },
-                            {
-                                field: "TaskProcessing",
-                                title: "Processing Type",
-                                template: function (dataItem) {
-                                    return dataItem.TaskProcessing == "P" ? "Execute all Tasks" : "Execute Tasks in Order";
-                                }
-                            }
-                        ]
-                    });
-                });
+                                scrollable: false,
+                                sortable: true,
+                                pageable: false,
+                                columns: [
+                                    {
+                                        field: "TaskGroupId",
+                                        title: "Delete",
+                                        template: function (dataItem) {
+                                            if (dataItem.ExceptionCount == 0) {
+                                                return `<a href="javascript:void(0);" onclick="openKendoDialog('Delete Group',
+                                                               '/TaskGroupDeleteConfirm?taskGroupId=${dataItem.TaskGroupId}&taskGroupId=@taskGroupType.TaskGroupId&bankId=@Model.BankId',
+                                                                500, 700)" class="aa-command-link">
+                                                                <i class="aa-icon fas fa-trash-alt fa-fw" title="Delete Group"></i></a>`;
+                                            } else {
+                                                return `<i class="aa-icon fas fa-trash-alt fa-fw disabled"
+                                                        title="Cannot delete: group has exceptions"></i>`;
+                                            }
+                                        },
+                                        width: 100
+                                    },
+                                    {
+                                        field: "TaskGroupId",
+                                        title: "Edit",
+                                        template: function (dataItem) {
+                                            return `<a href="/TaskGroupMaint?handler=edit&taskGroupId=${dataItem.TaskGroupId}&taskGroupId=@taskGroupType.TaskGroupId&bankId=@Model.BankId"
+                                                    class="aa-command-link">
+                                                    <i class="aa-icon fas fa-pencil-alt fa-fw" title="Edit Group"></i></a>`;
+                                        },
+                                        width: 100
+                                    },
+                                    {
+                                        field: "TaskGroupLabel",
+                                        title: "Task Group Name",
+                                        template: function (dataItem) {
+                                            return dataItem.TaskGroupLabel != "" ? "Credit Task" : "NA";
+                                        }
+                                    },
+                                    { field: "TaskCount", title: "Number of Tasks" },
+                                    {
+                                        field: "TaskProcessing",
+                                        title: "Processing Type",
+                                        template: function (dataItem) {
+                                            return dataItem.TaskProcessing == "P" ? "Execute all Tasks" : "Execute Tasks in Order";
+                                        }
+                                    }
+                                ]
+                            });
+                        });
                     </script>
-                }
-            </div>
+                </div>
+            }
+
         }
+
     </div>
 </div>
 
@@ -170,5 +194,9 @@
         $(document).ready(function () {
             $("#aa-task-groups").kendoTabStrip();
         });
+
+        function addNewCredit() {
+            window.location.href = "/ManageAccountStatus"
+        }
     </script>
 }

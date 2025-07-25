@@ -10,10 +10,16 @@ namespace TestWithKendo.DAL
         public DbSet<AccountClass> AccountClasses { get; set; }
         public DbSet<LoanStatus> LoanStatuses { get; set; }
         public DbSet<Loans> Loanses { get; set; }
+        public DbSet<TaskGroupType> TaskGroupTypes { set; get; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<TaskGroupType>(entity =>
+            {
+                entity.HasKey(e => e.TaskGroupId);
+            });
 
             modelBuilder.Entity<AccountClass>(entity =>
             {

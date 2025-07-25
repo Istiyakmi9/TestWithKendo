@@ -6,6 +6,29 @@ namespace TestWithKendo.Entities
     {
         public static void PreConfiguraData(ApplicationDbContext context)
         {
+            if (!context.TaskGroupTypes.Any())
+            {
+                context.TaskGroupTypes.AddRange(
+                    new TaskGroupType
+                    {
+                        TaskGroupId = 1,
+                        TaskGroupLabel = "Credit Task",
+                        TaskProcessing = "C",
+                        TaskCount = 5,
+                        ExceptionCount = 2
+                    },
+                    new TaskGroupType
+                    {
+                        TaskGroupId = 2,
+                        TaskGroupLabel = "Loan Task",
+                        TaskProcessing = "L",
+                        TaskCount = 10,
+                        ExceptionCount = 1
+                    }
+                );
+            }
+
+
             if (!context.AccountClasses.Any())
             {
                 context.AccountClasses.AddRange(

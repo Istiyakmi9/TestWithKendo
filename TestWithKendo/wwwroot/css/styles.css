@@ -173,11 +173,6 @@
 }
 
 
-
-
-
-
-
 .triangle {
     width: 200px;
     aspect-ratio: 1 / 1;
@@ -277,3 +272,63 @@ img, svg {
             .header-menu li a:hover {
                 background-color: #555; /* Hover effect */
             }
+
+
+
+/*taskgroup css file*/
+
+.strip-color {
+    background: #62a3be !important;
+}
+
+.button-color {
+    background: #6aacc8 !important;
+}
+
+.tab-active {
+    background: #6aacc8 !important;
+}
+
+.button-style {
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    padding: 7px 15px !important;
+    border-color: #6aacc8 !important;
+    border-radius: 2px !important;
+}
+
+.k-grid td {
+    border-width: 0 0 0 0px !important;
+}
+
+.k-state-active {
+    border-color: transparent !important;
+    border-bottom-color: white !important;
+    border-bottom-width: 2px !important;
+    margin-left: -5px !important;
+}
+
+.text-white span {
+    --bs-text-opacity: 1;
+    color: rgba(var(--bs-white-rgb), var(--bs-text-opacity)) !important;
+    font-weight: 600;
+}
+
+.k-state-active {
+    padding: 2px 16px !important;
+}
+
+.k-window-titlebar {
+    border-radius: 0px 0px 0 0 !important;
+}
+
+.arrow-icon {
+    background: white;
+    border: 1px solid #d9d9d9;
+    padding: 4px;
+    border-radius: 2px;
+}
+
+    .arrow-icon > i {
+        color: #62a3be !important;
+    }
